@@ -182,3 +182,80 @@ go install github.com/user/tool@latest
 
 Notes: use `go install` to place executable in a bin directory so it's runnable from your shell.
 
+## Variables
+
+Go has explicit variable declarations and a short declaration form. Variables have zero values when not initialized.
+
+Examples:
+
+```go
+var x int           // zero value 0
+var s string = "a" // explicit type
+var a, b = 1, "x"  // type inferred
+
+// short declaration (inside functions only)
+count := 10
+```
+
+Constants:
+
+```go
+const Pi = 3.14
+const (
+	A = iota // 0
+	B         // 1
+)
+```
+
+Notes:
+- Use the short `:=` form inside functions for brevity.
+- Prefer explicit types in package-level declarations for clarity.
+
+## For loops
+
+`for` is Go's only loop construct and supports multiple forms.
+
+Traditional C-style:
+
+```go
+for i := 0; i < 10; i++ {
+	fmt.Println(i)
+}
+```
+
+Condition-only (like `while`):
+
+```go
+n := 0
+for n < 5 {
+	n++
+}
+```
+
+Infinite loop:
+
+```go
+for {
+	// run forever
+}
+```
+
+Range loop (iterate slices, maps, strings, channels):
+
+```go
+nums := []int{1,2,3}
+for i, v := range nums {
+	fmt.Println(i, v)
+}
+
+m := map[string]int{"a":1}
+for k, v := range m {
+	fmt.Println(k, v)
+}
+```
+
+Control:
+- `break`, `continue`, and labeled loops are supported for complex flow control.
+
+Best practice: prefer `range` for collections and keep loop bodies small and clear.
+
