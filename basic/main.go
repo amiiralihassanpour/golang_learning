@@ -58,4 +58,36 @@ func main() {
 		fmt.Println("key is not in range [1,3]")		
 	}
 
+	// --------------------------------------------------------------------
+
+	var nums [5]int
+	nums[1] = 20
+	fmt.Println(nums)
+	
+	var arr [5]int = [5]int{1, 2, 3, 4, 5}
+	fmt.Println("Array:", arr)
+
+	s := make([]int, 3, 4)
+	s[0] = 10
+	s[1] = 20
+	s[2] = 30
+	fmt.Println("Slice:", s, "Length:", len(s), "Capacity:", cap(s))
+	fmt.Printf("%p\n", s)
+	fmt.Println("Address of slice:", &s[0])
+
+	s = append(s, 40)
+	s = append(s, 50)
+	fmt.Println("Slice after appending:", s, "Length:", len(s), "Capacity:", cap(s))
+	fmt.Printf("%p\n", s)
+	fmt.Println("Address of slice after appending:", &s[0])
+
+	slice := []string{"Go", "Python", "Java"}
+	fmt.Println("Slice:", slice)
+
+	mapping := map[string]int{"Alice": 30, "Bob": 25}
+	fmt.Println("Map:", mapping)
+
+	var TwoDArray [2][3]int = [2][3]int{{1, 2, 3}, {4, 5, 6}}
+	fmt.Println("Two-dimensional array:", TwoDArray)
+
 }

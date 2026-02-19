@@ -344,4 +344,88 @@ Notes:
 - Prefer `switch` over long `if`/`else` chains for readability.
 - Avoid unnecessary `fallthrough`; it can make control flow harder to follow.
 
+## Arrays and slices
+
+In Go, arrays are fixed-size, contiguous sequences of elements. Slices are the more commonly used, flexible view over arrays.
+
+Arrays:
+
+```go
+var a [3]int           // array of 3 ints, zero-valued
+a[0] = 1
+// length is part of the type
+var b = [2]string{"x", "y"}
+```
+
+Notes about arrays:
+- Arrays have a fixed size and their length is part of the type (`[3]int` != `[4]int`).
+- Arrays are rarely used directly; they're useful when fixed-size storage is required.
+
+Slices:
+
+```go
+// slice literal (backed by array)
+nums := []int{1, 2, 3}
+
+// make creates a slice with length and capacity
+buf := make([]byte, 10, 20) // len=10, cap=20
+
+// slicing an array or slice
+s := nums[1:3] // elements at indices 1 and 2
+```
+
+Key slice concepts:
+- Slices are descriptors: `(pointer, length, capacity)` that reference an underlying array.
+- Appending grows a slice; if capacity is exceeded Go allocates a new underlying array:
+
+```go
+s = append(s, 4)
+```
+
+- Passing a slice to a function passes the slice header by value but allows modifying the underlying array.
+
+When to use which:
+- Use slices for most variable-length collections.
+- Use arrays only when you specifically need a fixed-size value type.
+
+Further reading: https://go.dev/doc/faq#slices
+
+### Slice details
+
+A slice in Go is a descriptor for a contiguous segment of an underlying array and consists of three parts: a pointer to the array, a length, and a capacity.
+
+- `len(s)` returns the number of elements currently accessible in the slice.
+- `cap(s)` returns the maximum number of elements the slice can grow to without allocating a new underlying array (measured from the slice start).
+
+Example:
+
+```go
+s := make([]int, 3, 4) // len=3, cap=4
+s[0], s[1], s[2] = 10, 20, 30
+fmt.Println(len(s), cap(s)) // prints: 3 4
+
+s = append(s, 40)           // len becomes 4, cap stays 4
+s = append(s, 50)           // len becomes 5 -> new underlying array allocated; cap grows
+```
+
+Slicing an existing slice affects the new slice's len and cap:
+
+```go
+t := s[1:3]                // len(t) == 2 (indices 1 and 2)
+// cap(t) == cap(s) - 1     // capacity measured from index 1 to end of underlying array
+```
+
+Important behaviours and tips:
+- Appending past `cap` causes allocation of a new underlying array and copies the old data; the exact growth strategy is implementation-dependent.
+- Multiple slices can share the same underlying array; modifying one slice can affect others. Use `copy` to make an independent copy:
+
+```go
+dup := make([]int, len(s))
+copy(dup, s)
+```
+
+- Preallocate capacity with `make([]T, 0, n)` when you know expected size to reduce reallocations.
+- Use `len` for safe iteration and `cap` for optimization decisions; avoid relying on exact capacity growth rules.
+
+
 
