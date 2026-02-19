@@ -98,4 +98,15 @@ func main() {
 	var TwoDArray [2][3]int = [2][3]int{{1, 2, 3}, {4, 5, 6}}
 	fmt.Println("Two-dimensional array:", TwoDArray)
 
+	// --------------------------------------------------------------------
+
+	list := []int{1, 2, 3, 4, 5}
+	for index, value := range list {
+		fmt.Printf("Index: %d, Value: %d\n", index, value)
+	}
+
+	for key, value := range students {
+		fmt.Printf("Key: %s, Value: %d\n", key, value)
+	}
+
 }
