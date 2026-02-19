@@ -259,3 +259,29 @@ Control:
 
 Best practice: prefer `range` for collections and keep loop bodies small and clear.
 
+## If / Else statements
+
+Go's conditional statements are straightforward. The `if` condition does not require parentheses and can include a short statement before the condition.
+
+Examples:
+
+```go
+if x > 0 {
+	fmt.Println("positive")
+} else if x < 0 {
+	fmt.Println("negative")
+} else {
+	fmt.Println("zero")
+}
+
+// short statement before condition
+if err := doSomething(); err != nil {
+	fmt.Println("error:", err)
+}
+```
+
+Notes:
+- Use the short statement form to limit the scope of temporary variables (like `err`).
+- Avoid overly complex `if` chains; prefer early returns for clearer control flow.
+
+

@@ -29,4 +29,20 @@ func main() {
 		fmt.Println("Iteration:", i)
 	}
 
+	// --------------------------------------------------------------------
+
+	for i:=1; i<=5; i++ {
+		if i%2 == 0 {
+			fmt.Println(i, "is even")
+		} else {
+			fmt.Println(i, "is odd")
+		}
+	}
+
+	if name:= "Alice"; name == "Alice" {
+		fmt.Println("Hello, Alice!")
+	} else {
+		fmt.Println("Hello, stranger!")
+	}
+
 }
