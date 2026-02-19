@@ -284,4 +284,269 @@ Notes:
 - Use the short statement form to limit the scope of temporary variables (like `err`).
 - Avoid overly complex `if` chains; prefer early returns for clearer control flow.
 
+## Switch / Case
+
+`switch` in Go provides a clear way to select between multiple alternatives. It supports value switches, expressionless switches, `fallthrough`, and type switches.
+
+Value switch:
+
+```go
+switch s := status; s {
+case "ok":
+	fmt.Println("all good")
+case "warn", "minor":
+	fmt.Println("warning")
+default:
+	fmt.Println("unknown")
+}
+```
+
+Expressionless switch (like `if` chains):
+
+```go
+switch {
+case x < 0:
+	fmt.Println("neg")
+case x == 0:
+	fmt.Println("zero")
+default:
+	fmt.Println("pos")
+}
+```
+
+`fallthrough` forces execution to the next case (use sparingly):
+
+```go
+switch n {
+case 0:
+	fmt.Println("zero")
+	fallthrough
+case 1:
+	fmt.Println("also run for 0")
+}
+```
+
+Type switch (inspect dynamic type of an interface):
+
+```go
+var i interface{} = 42
+switch v := i.(type) {
+case int:
+	fmt.Println("int", v)
+case string:
+	fmt.Println("string", v)
+default:
+	fmt.Printf("unknown type %T\n", v)
+}
+```
+
+Notes:
+- Prefer `switch` over long `if`/`else` chains for readability.
+- Avoid unnecessary `fallthrough`; it can make control flow harder to follow.
+
+## Arrays and slices
+
+In Go, arrays are fixed-size, contiguous sequences of elements. Slices are the more commonly used, flexible view over arrays.
+
+Arrays:
+
+```go
+var a [3]int           // array of 3 ints, zero-valued
+a[0] = 1
+// length is part of the type
+var b = [2]string{"x", "y"}
+```
+
+Notes about arrays:
+- Arrays have a fixed size and their length is part of the type (`[3]int` != `[4]int`).
+- Arrays are rarely used directly; they're useful when fixed-size storage is required.
+
+Slices:
+
+```go
+// slice literal (backed by array)
+nums := []int{1, 2, 3}
+
+// make creates a slice with length and capacity
+buf := make([]byte, 10, 20) // len=10, cap=20
+
+// slicing an array or slice
+s := nums[1:3] // elements at indices 1 and 2
+```
+
+Key slice concepts:
+- Slices are descriptors: `(pointer, length, capacity)` that reference an underlying array.
+- Appending grows a slice; if capacity is exceeded Go allocates a new underlying array:
+
+```go
+s = append(s, 4)
+```
+
+- Passing a slice to a function passes the slice header by value but allows modifying the underlying array.
+
+When to use which:
+- Use slices for most variable-length collections.
+- Use arrays only when you specifically need a fixed-size value type.
+
+Further reading: https://go.dev/doc/faq#slices
+
+### Slice details
+
+A slice in Go is a descriptor for a contiguous segment of an underlying array and consists of three parts: a pointer to the array, a length, and a capacity.
+
+- `len(s)` returns the number of elements currently accessible in the slice.
+- `cap(s)` returns the maximum number of elements the slice can grow to without allocating a new underlying array (measured from the slice start).
+
+Example:
+
+```go
+s := make([]int, 3, 4) // len=3, cap=4
+s[0], s[1], s[2] = 10, 20, 30
+fmt.Println(len(s), cap(s)) // prints: 3 4
+
+s = append(s, 40)           // len becomes 4, cap stays 4
+s = append(s, 50)           // len becomes 5 -> new underlying array allocated; cap grows
+```
+
+Slicing an existing slice affects the new slice's len and cap:
+
+```go
+t := s[1:3]                // len(t) == 2 (indices 1 and 2)
+// cap(t) == cap(s) - 1     // capacity measured from index 1 to end of underlying array
+```
+
+Important behaviours and tips:
+- Appending past `cap` causes allocation of a new underlying array and copies the old data; the exact growth strategy is implementation-dependent.
+- Multiple slices can share the same underlying array; modifying one slice can affect others. Use `copy` to make an independent copy:
+
+```go
+dup := make([]int, len(s))
+copy(dup, s)
+```
+
+- Preallocate capacity with `make([]T, 0, n)` when you know expected size to reduce reallocations.
+- Use `len` for safe iteration and `cap` for optimization decisions; avoid relying on exact capacity growth rules.
+
+## Maps
+
+Maps are Go's built-in hash table type for storing key → value pairs. The type is written `map[K]V`.
+
+Declaration and literals:
+
+```go
+var m map[string]int            // nil map, cannot write until initialized
+m2 := map[string]int{"A": 1}  // literal, ready to use
+m3 := make(map[string]int, 10)  // preallocate space for ~10 entries
+```
+
+Access and existence check:
+
+```go
+v := m2["A"]           // zero value if key missing
+v, ok := m2["Alice"]   // ok==true if key present
+```
+
+Delete and length:
+
+```go
+delete(m2, "A")        // remove key safely (no panic if missing)
+fmt.Println(len(m2))    // number of keys
+```
+
+Iteration:
+
+```go
+for k, v := range m2 {
+	fmt.Println(k, v)
+}
+```
+
+Notes and best practices:
+- A nil map behaves like an empty map on reads but will panic on writes; use `make` before writing.
+- Map iteration order is intentionally randomized; do not rely on any ordering.
+- Maps are reference-like: assigning a map to another variable copies the header but both refer to the same underlying data.
+- Maps are NOT safe for concurrent writes. Use `sync.RWMutex` or `sync.Map` for concurrent access.
+- For performance-sensitive code, pre-size with `make(map[K]V, n)` when you know approximate number of keys.
+
+Example combined usage:
+
+```go
+users := map[string]int{"alice": 30}
+if _, ok := users["bob"]; !ok {
+	users["bob"] = 25
+}
+for name := range users {
+	fmt.Println(name)
+}
+```
+
+## Functions
+
+Functions are the primary way to structure reusable logic in Go. They support multiple return values, named return values, variadic parameters, and methods (functions with receivers).
+
+Declaration:
+
+```go
+func add(a int, b int) int {
+	return a + b
+}
+
+// parameter types can be shortened when consecutive
+func multiply(a, b int) int { return a * b }
+```
+
+Multiple return values and error handling:
+
+```go
+func divide(a, b int) (int, error) {
+	if b == 0 {
+		return 0, fmt.Errorf("divide by zero")
+	}
+	return a / b, nil
+}
+```
+
+Named return values (use sparingly):
+
+```go
+func stats(nums []int) (min, max int) {
+	// min and max are named return values
+	return
+}
+```
+
+Variadic functions:
+
+```go
+func sum(vals ...int) int {
+	total := 0
+	for _, v := range vals {
+		total += v
+	}
+	return total
+}
+```
+
+Methods (functions with receivers) — attach behavior to types:
+
+```go
+type Point struct{ X, Y int }
+
+func (p Point) Move(dx, dy int) Point {
+	p.X += dx
+	p.Y += dy
+	return p
+}
+```
+
+Passing and returning slices/maps/channels copies the header (small value); underlying data is shared. Use pointers when you need to modify the receiver in-place.
+
+Best practices:
+- Keep functions small and focused (single responsibility).
+- Return errors as values and check them at call sites.
+- Prefer explicit returns over naked returns for clarity.
+- Use `context.Context` as the first parameter for cancellable operations and long-running APIs.
+
+
+
 

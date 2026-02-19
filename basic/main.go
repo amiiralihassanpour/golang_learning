@@ -2,6 +2,23 @@ package main
 
 import "fmt"
 
+func sum(a int, b int) int {
+	return a + b
+}
+
+func myfunction(name string) (string, int) {
+	return name, 30
+}
+
+func passbyvalue(x int) {
+	x = x + 10
+	fmt.Println("Inside passbyvalue, number:", x)
+}
+
+func passbyreference(x *int) {
+	*x = *x + 10
+	fmt.Println("Inside passbyreference, number:", *x)
+}
 
 func main() {
 	
@@ -44,5 +61,85 @@ func main() {
 	} else {
 		fmt.Println("Hello, stranger!")
 	}
+
+	key := 3
+
+	switch key {
+	case 1:
+		fmt.Println("key is 1")
+	case 2:
+		fmt.Println("key is 2")
+	case 3: 
+		fmt.Println("key is 3")
+	default:
+		fmt.Println("key is not in range [1,3]")		
+	}
+
+	// --------------------------------------------------------------------
+
+	var nums [5]int
+	nums[1] = 20
+	fmt.Println(nums)
+	
+	var arr [5]int = [5]int{1, 2, 3, 4, 5}
+	fmt.Println("Array:", arr)
+
+	s := make([]int, 3, 4)
+	s[0] = 10
+	s[1] = 20
+	s[2] = 30
+	fmt.Println("Slice:", s, "Length:", len(s), "Capacity:", cap(s))
+	fmt.Printf("%p\n", s)
+	fmt.Println("Address of slice:", &s[0])
+
+	s = append(s, 40)
+	s = append(s, 50)
+	fmt.Println("Slice after appending:", s, "Length:", len(s), "Capacity:", cap(s))
+	fmt.Printf("%p\n", s)
+	fmt.Println("Address of slice after appending:", &s[0])
+
+	slice := []string{"Go", "Python", "Java"}
+	fmt.Println("Slice:", slice)
+
+	students := make(map[string]int)
+	students["Alice"] = 30
+	students["Bob"] = 25
+	fmt.Println("Map:", students)
+
+	delete(students, "Alice")
+	fmt.Println("Map after deletion:", students)
+
+	mapping := map[string]int{"Alice": 30, "Bob": 25}
+	fmt.Println("Map:", mapping)
+
+	var TwoDArray [2][3]int = [2][3]int{{1, 2, 3}, {4, 5, 6}}
+	fmt.Println("Two-dimensional array:", TwoDArray)
+
+	// --------------------------------------------------------------------
+
+	list := []int{1, 2, 3, 4, 5}
+	for index, value := range list {
+		fmt.Printf("Index: %d, Value: %d\n", index, value)
+	}
+
+	for key, value := range students {
+		fmt.Printf("Key: %s, Value: %d\n", key, value)
+	}
+
+	//--------------------------------------------------------------------
+
+	fmt.Println("Sum of 5 and 10 is", sum(5, 10))
+
+	myname, myage := myfunction("Alice")
+	fmt.Printf("Name: %s, Age: %d\n", myname, myage)	
+
+	z := 20
+	fmt.Println("Before passbyvalue, z:", z)
+	passbyvalue(z)
+	fmt.Println("After passbyvalue, z:", z)
+
+	fmt.Println("Before passbyreference, z:", z)
+	passbyreference(&z)
+	fmt.Println("After passbyreference, z:", z)
 
 }
