@@ -45,4 +45,17 @@ func main() {
 		fmt.Println("Hello, stranger!")
 	}
 
+	key := 3
+
+	switch key {
+	case 1:
+		fmt.Println("key is 1")
+	case 2:
+		fmt.Println("key is 2")
+	case 3: 
+		fmt.Println("key is 3")
+	default:
+		fmt.Println("key is not in range [1,3]")		
+	}
+
 }

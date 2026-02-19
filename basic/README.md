@@ -284,4 +284,64 @@ Notes:
 - Use the short statement form to limit the scope of temporary variables (like `err`).
 - Avoid overly complex `if` chains; prefer early returns for clearer control flow.
 
+## Switch / Case
+
+`switch` in Go provides a clear way to select between multiple alternatives. It supports value switches, expressionless switches, `fallthrough`, and type switches.
+
+Value switch:
+
+```go
+switch s := status; s {
+case "ok":
+	fmt.Println("all good")
+case "warn", "minor":
+	fmt.Println("warning")
+default:
+	fmt.Println("unknown")
+}
+```
+
+Expressionless switch (like `if` chains):
+
+```go
+switch {
+case x < 0:
+	fmt.Println("neg")
+case x == 0:
+	fmt.Println("zero")
+default:
+	fmt.Println("pos")
+}
+```
+
+`fallthrough` forces execution to the next case (use sparingly):
+
+```go
+switch n {
+case 0:
+	fmt.Println("zero")
+	fallthrough
+case 1:
+	fmt.Println("also run for 0")
+}
+```
+
+Type switch (inspect dynamic type of an interface):
+
+```go
+var i interface{} = 42
+switch v := i.(type) {
+case int:
+	fmt.Println("int", v)
+case string:
+	fmt.Println("string", v)
+default:
+	fmt.Printf("unknown type %T\n", v)
+}
+```
+
+Notes:
+- Prefer `switch` over long `if`/`else` chains for readability.
+- Avoid unnecessary `fallthrough`; it can make control flow harder to follow.
+
 
