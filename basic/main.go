@@ -84,6 +84,14 @@ func main() {
 	slice := []string{"Go", "Python", "Java"}
 	fmt.Println("Slice:", slice)
 
+	students := make(map[string]int)
+	students["Alice"] = 30
+	students["Bob"] = 25
+	fmt.Println("Map:", students)
+
+	delete(students, "Alice")
+	fmt.Println("Map after deletion:", students)
+
 	mapping := map[string]int{"Alice": 30, "Bob": 25}
 	fmt.Println("Map:", mapping)
 
