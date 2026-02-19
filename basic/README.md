@@ -480,5 +480,73 @@ for name := range users {
 }
 ```
 
+## Functions
+
+Functions are the primary way to structure reusable logic in Go. They support multiple return values, named return values, variadic parameters, and methods (functions with receivers).
+
+Declaration:
+
+```go
+func add(a int, b int) int {
+	return a + b
+}
+
+// parameter types can be shortened when consecutive
+func multiply(a, b int) int { return a * b }
+```
+
+Multiple return values and error handling:
+
+```go
+func divide(a, b int) (int, error) {
+	if b == 0 {
+		return 0, fmt.Errorf("divide by zero")
+	}
+	return a / b, nil
+}
+```
+
+Named return values (use sparingly):
+
+```go
+func stats(nums []int) (min, max int) {
+	// min and max are named return values
+	return
+}
+```
+
+Variadic functions:
+
+```go
+func sum(vals ...int) int {
+	total := 0
+	for _, v := range vals {
+		total += v
+	}
+	return total
+}
+```
+
+Methods (functions with receivers) — attach behavior to types:
+
+```go
+type Point struct{ X, Y int }
+
+func (p Point) Move(dx, dy int) Point {
+	p.X += dx
+	p.Y += dy
+	return p
+}
+```
+
+Passing and returning slices/maps/channels copies the header (small value); underlying data is shared. Use pointers when you need to modify the receiver in-place.
+
+Best practices:
+- Keep functions small and focused (single responsibility).
+- Return errors as values and check them at call sites.
+- Prefer explicit returns over naked returns for clarity.
+- Use `context.Context` as the first parameter for cancellable operations and long-running APIs.
+
+
 
 

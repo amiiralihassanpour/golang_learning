@@ -2,6 +2,23 @@ package main
 
 import "fmt"
 
+func sum(a int, b int) int {
+	return a + b
+}
+
+func myfunction(name string) (string, int) {
+	return name, 30
+}
+
+func passbyvalue(x int) {
+	x = x + 10
+	fmt.Println("Inside passbyvalue, number:", x)
+}
+
+func passbyreference(x *int) {
+	*x = *x + 10
+	fmt.Println("Inside passbyreference, number:", *x)
+}
 
 func main() {
 	
@@ -108,5 +125,21 @@ func main() {
 	for key, value := range students {
 		fmt.Printf("Key: %s, Value: %d\n", key, value)
 	}
+
+	//--------------------------------------------------------------------
+
+	fmt.Println("Sum of 5 and 10 is", sum(5, 10))
+
+	myname, myage := myfunction("Alice")
+	fmt.Printf("Name: %s, Age: %d\n", myname, myage)	
+
+	z := 20
+	fmt.Println("Before passbyvalue, z:", z)
+	passbyvalue(z)
+	fmt.Println("After passbyvalue, z:", z)
+
+	fmt.Println("Before passbyreference, z:", z)
+	passbyreference(&z)
+	fmt.Println("After passbyreference, z:", z)
 
 }
